@@ -2,8 +2,6 @@
 
 Cryptoverse Trading Lab is a real-time cryptocurrency portfolio tracking and trading simulation web application. Built entirely as a frontend application, it provides an interactive dashboard interface to monitor asset prices, analyze market trends using multiple chart views, simulate mock transactions, and track performance achievements.
 
-## Live Demo
-[Insert link to your deployed site here, such as Netlify, GitHub Pages, or Vercel]
 
 ## Core Features
 
