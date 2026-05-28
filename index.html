@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cryptoverse - Premium Real-Time Crypto Trading Simulator & Portfolio Sandbox with active market events.">
+    <title>Cryptoverse // Real-time Portfolio Sandbox</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Local Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="cyber-grid-overlay"></div>
+    
+    <div class="app-container">
+        <!-- TOP NAVIGATION BAR -->
+        <header class="app-header">
+            <div class="header-logo">
+                <div class="logo-icon"></div>
+                <div class="logo-text">
+                    <span class="logo-main">CRYPTOVERSE</span>
+                    <span class="logo-sub">TRADING LAB</span>
+                </div>
+            </div>
+            
+            <div class="header-stats">
+                <div class="stat-card" id="net-worth-card">
+                    <span class="stat-label">NET WORTH</span>
+                    <span class="stat-val positive" id="val-net-worth">$50,000.00</span>
+                </div>
+                <div class="stat-card" id="total-pnl-card">
+                    <span class="stat-label">TOTAL RETURN</span>
+                    <span class="stat-val neutral" id="val-pnl">+$0.00 (0.00%)</span>
+                </div>
+                <div class="stat-card" id="cash-card">
+                    <span class="stat-label">AVAILABLE USD</span>
+                    <span class="stat-val" id="val-cash">$50,000.00</span>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <button id="btn-sound-toggle" class="header-btn" title="Toggle Sound FX">
+                    <svg class="icon" viewBox="0 0 24 24" width="20" height="20">
+                        <path d="M12 3v18l-6-6H2V9h4l6-6zm3 9c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" fill="currentColor"/>
+                    </svg>
+                </button>
+                <button id="btn-reset" class="header-btn secondary" title="Reset Simulation">
+                    <svg class="icon" viewBox="0 0 24 24" width="20" height="20">
+                        <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" fill="currentColor"/>
+                    </svg>
+                    <span>RESET</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- DASHBOARD GRID -->
+        <main class="dashboard-grid">
+            
+            <!-- LEFT PANEL: WATCHLIST -->
+            <section class="grid-panel watchlist-panel" aria-label="Crypto Watchlist">
+                <div class="panel-header">
+                    <h2 class="panel-title">WATCHLIST</h2>
+                    <span class="pulse-indicator">LIVE FEED</span>
+                </div>
+                <div class="panel-body custom-scrollbar">
+                    <div id="watchlist-container" class="watchlist-list">
+                        <!-- Dynamic Watchlist Items Rendered Here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- CENTER PANEL: CHART & TERMINAL -->
+            <section class="center-column" aria-label="Trading Terminal and Charts">
+                <!-- CHART PANEL -->
+                <div class="grid-panel chart-panel">
+                    <div class="panel-header chart-panel-header">
+                        <div class="active-coin-meta" id="selected-coin-meta">
+                            <span class="coin-symbol-large" id="chart-coin-symbol">BTC</span>
+                            <span class="coin-name-large" id="chart-coin-name">Bitcoin</span>
+                            <span class="coin-price-large" id="chart-coin-price">$0.00</span>
+                            <span class="coin-change-large positive" id="chart-coin-change">+0.00%</span>
+                        </div>
+                        <div class="chart-controls">
+                            <div class="chart-toggles">
+                                <button class="chart-toggle-btn active" id="btn-chart-line">LINE</button>
+                                <button class="chart-toggle-btn" id="btn-chart-candle">CANDLE</button>
+                            </div>
+                            <div class="timeframe-selector">
+                                <button class="timeframe-btn active" data-timeframe="1m">1M</button>
+                                <button class="timeframe-btn" data-timeframe="5m">5M</button>
+                                <button class="timeframe-btn" data-timeframe="1h">1H</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body chart-body">
+                        <div class="chart-canvas-container">
+                            <canvas id="trading-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOTTOM ZONE: ORDER INPUT & NEWS TICKER -->
+                <div class="terminal-news-grid">
+                    <!-- ORDER FORM -->
+                    <div class="grid-panel terminal-panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">EXECUTION TERMINAL</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="trade-tabs">
+                                <button class="trade-tab active" id="tab-buy">BUY</button>
+                                <button class="trade-tab" id="tab-sell">SELL</button>
+                            </div>
+                            
+                            <form id="order-form" class="order-form" onsubmit="return false;">
+                                <div class="order-type-toggle">
+                                    <label class="radio-label">
+                                        <input type="radio" name="order-type" value="market" checked>
+                                        <span>Market</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="order-type" value="limit">
+                                        <span>Limit</span>
+                                    </label>
+                                </div>
+
+                                <div class="form-group" id="limit-price-group" style="display: none;">
+                                    <label for="input-limit-price">Limit Price (USD)</label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="input-limit-price" placeholder="0.00" step="any" min="0.000001">
+                                        <span class="input-suffix">USD</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="input-amount">Amount (<span id="amount-asset-label">BTC</span>)</label>
+                                        <div class="input-wrapper">
+                                            <input type="number" id="input-amount" placeholder="0.00" step="any" min="0">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="input-total">Total (USD)</label>
+                                        <div class="input-wrapper">
+                                            <input type="number" id="input-total" placeholder="0.00" step="any" min="0">
+                                            <span class="input-suffix">USD</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Percentage Shortcuts -->
+                                <div class="percent-shortcuts">
+                                    <button type="button" class="pct-btn" data-pct="25">25%</button>
+                                    <button type="button" class="pct-btn" data-pct="50">50%</button>
+                                    <button type="button" class="pct-btn" data-pct="75">75%</button>
+                                    <button type="button" class="pct-btn" data-pct="100">100%</button>
+                                </div>
+
+                                <div class="trade-summary">
+                                    <span class="summary-label">Available:</span>
+                                    <span class="summary-val" id="trade-available-funds">$50,000.00 Cash</span>
+                                </div>
+
+                                <button type="submit" id="btn-submit-order" class="btn-execute-order buy">
+                                    PLACE MARKET BUY ORDER
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- MARKET NEWS -->
+                    <div class="grid-panel news-panel">
+                        <div class="panel-header">
+                            <h2 class="panel-title">MARKET INTELLIGENCE</h2>
+                            <span class="cyber-badge blink">WIRE FEED</span>
+                        </div>
+                        <div class="panel-body custom-scrollbar">
+                            <div id="news-feed-container" class="news-list">
+                                <!-- Dynamic News Feeds -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIGHT PANEL: PORTFOLIO & ACHIEVEMENTS -->
+            <section class="right-column" aria-label="Portfolio and Achievements">
+                
+                <!-- PORTFOLIO PANEL -->
+                <div class="grid-panel portfolio-panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">PORTFOLIO ALLOCATION</h2>
+                    </div>
+                    <div class="panel-body portfolio-body">
+                        <div class="portfolio-pie-container">
+                            <canvas id="portfolio-pie-chart" width="180" height="180"></canvas>
+                            <div id="portfolio-pie-legend" class="portfolio-legend custom-scrollbar">
+                                <!-- Legend generated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACHIEVEMENTS PANEL -->
+                <div class="grid-panel achievements-panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">ACHIEVEMENT BADGES</h2>
+                        <span class="badge-ratio" id="badges-unlocked-ratio">0 / 8</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="achievements-grid" id="achievements-container">
+                            <!-- Dynamic Achievements -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TRANSACTION HISTORY -->
+                <div class="grid-panel ledger-panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">TRANSACTION LEDGER</h2>
+                    </div>
+                    <div class="panel-body custom-scrollbar">
+                        <table class="ledger-table">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Asset</th>
+                                    <th>Size</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ledger-body">
+                                <!-- Dynamic entries -->
+                                <tr class="no-records-row">
+                                    <td colspan="4">No trades executed yet.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <!-- TOAST POPUPS -->
+    <div id="toast-container" class="toast-container"></div>
+    
+    <!-- SCRIPTS -->
+    <script type="module" src="src/app.js"></script>
+</body>
+</html>
